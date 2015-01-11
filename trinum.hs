@@ -3,25 +3,35 @@
 --This version of trinum sums too many numbers
 --trinum x = (sum [1..x]): trinum (x+1)
 
+--scanl1 is like foldl1 except it's cumulative over the entire list so in scanl1 (+) [x,y,z]
+--we get [x,x+y,x+y+z]
+trinum :: [Integer]
 trinum = scanl1 (+) [1..]
 
 --Take target dnums (number of divisors), and a list, return values >= dnums.
 --divisors dnums (x:xs) = [a | a <- [1..x], x `mod` a == 0]
 
---Our infinite list
+--Our infinite list --Why is this here? trinum worked differently before and then I didn't feel like changing it.
+inflist :: [Integer]
 inflist = trinum
 
 --Get the factors of a number. x/2 so that our list is limited to half the size of the number.
 --We do this because half of any natural number will be the largest factor of a number
+factors :: Integer -> [Integer]
 factors x
 	| even x = [y | y<-[2..(x `div` 2)], x `mod` y == 0 ]
 	| otherwise = [y | y<-[1,3..(x `div` 2)], x `mod` y == 0 ]
 
 --Check if length of an array is larger than a target value (t)
+arrlen :: Int -> [Integer] -> Bool
 arrlen t (x) = (length x) > t
 
---Filter faclist with a target (t) for arrlen so we get every number that has at least t factors 
+--Filter faclist with a target (t) for arrlen so we get every number that has at least t factors
+facGTt :: Int -> [Integer]
 facGTt t = filter (arrlen t . factors) inflist
+
+--List of prime numbers DOESN'T WORK
+--primes = [x | x <-[2..], filter ((0 ==) x `mod`) [2..x]]
 
 {-
 <jesyspa> Factoring is hard.
