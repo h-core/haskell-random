@@ -25,15 +25,17 @@ uniquevalues n = [(a,c)
   | a <- [minimum n .. maximum n],
   let c  = (length $ filter (==a) n)]
 
---Render the bars to be a string of '*' representing the count.
-renderbars :: (Integer,Int) -> String
-renderbars (a,c) = undefined
+--Render the bar to be a string of '*' representing the count.
+--Under each bar print the axis value
+renderbar :: (Integer,Int) -> String
+renderbar (a,c) = show a ++ "|" ++ replicate c '*'
 
 --Transpose all bars so they go from horizontal to vertical
 --Print the bars
---Under the bars print an axis that goes from minimum value to maximum value
-histogram :: [Integer] -> String
-histogram n = undefined
+
+-- histogram :: [Integer] -> String
+-- Horizontal instead of vertical at the moment. Also returning an IO () instead of a string obviously...
+histogram vs = mapM_ putStrLn $ map renderbar $ uniquevalues vs
 
 
 -- uniquevalues [] =
