@@ -26,21 +26,37 @@ data Tree a = Leaf
 splitHalf :: [a] -> ([a],[a])
 splitHalf x = splitAt (div (length x) 2) x
 
---Add a node to a tree
+--Add a node to a tree. HELP RUNAWAY TYPES HELPPPPPPPPPPPPPPPP
+-- addNode :: a -> Tree a -> Tree a
+-- addNode a (Node n left@(Node lN lL lM lR) x right@(Node rN rL rM rR)) =
+--   if odd n
+--      then Node n+1 left a right
+--      else Node n+1 right a left
 
-addNode :: a -> Tree a -> Tree a
-addNode [] x = Leaf
+--IF I BREAK THE SUMMING INTO A SEPARATE FUNCTION THEN I CAN RETURN THE TUPLE I WANT WITH LEFT AND RIGHT LENGTHS
+treeLen :: (Eq a) => Tree a -> Integer
+treeLen (Node _ l _ r) = left + right
+  where
+    left = if l == Leaf then 0 :: Integer else 1 + treeLen l
+    right = if r == Leaf then 0 :: Integer else 1 + treeLen r
+
+addNode :: (Eq a) => a -> Tree a -> Tree a
+addNode value tree@(Node _ l v r)
+    | odd n = (Node n (addNode value l) v r)
+    | otherwise = (Node n l v (addNode value r))
+  where n = treeLen tree
+        left = if l == Leaf then Leaf else
 
 --Produce balanced binary tree of a list using foldr.
-foldTree :: [a] -> Tree a
-foldTree [] = Leaf
--- foldTree = foldr (\x -> (Node (+1) foldTree) x (Node (+1) foldTree)) (Node 0)
-foldTree xs = foldr (\x -> (Node node $ foldTree left) x (Node node $ foldTree right)) Leaf
-  where
-    split = splitHalf xs
-    left  = fst split
-    right = snd split
-    node = length left - 1
+-- foldTree :: [a] -> Tree a
+-- foldTree [] = Leaf
+-- -- foldTree = foldr (\x -> (Node (+1) foldTree) x (Node (+1) foldTree)) (Node 0)
+-- foldTree xs = foldr (\x -> (Node node $ foldTree left) x (Node node $ foldTree right)) Leaf
+--   where
+--     split = splitHalf xs
+--     left  = fst split
+--     right = snd split
+--     node = length left - 1
 
 xor :: [Bool] -> Bool
 xor x = odd $ foldr (\x -> if x==True then (+1) else (+0)) 0 x
