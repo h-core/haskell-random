@@ -20,10 +20,10 @@ evalStr x
     where expr = parseExp Lit Add Mul x
 
 class Expr a where
-mul, add :: a -> a -> ExprT
-lit :: a -> ExprT
+mul, add :: ExprT -> ExprT -> ExprT
+lit :: Integer -> ExprT
 
-instance Expr Integer where
+instance Expr ExprT where
 mul a b = (Mul a b)
 add a b = (Add a b)
 lit a = (Lit a)
