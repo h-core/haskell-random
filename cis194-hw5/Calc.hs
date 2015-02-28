@@ -40,6 +40,31 @@ instance Expr Bool where
   mul a b = a && b
   add a b = a || b
 
+newtype MinMax = MinMax Integer deriving (Ord, Eq, Show)
+newtype Mod7 = Mod7 Integer deriving (Ord, Eq, Show)
+
+instance Expr MinMax where
+  mul a b
+    | a > b = b
+    | otherwise = a
+  add a b
+    | a < b = b
+    | otherwise = a
+  lit a = MinMax a
+
+instance Expr Mod7 where
+  mul (Mod7 a) (Mod7 b) = lit (mod (mul a b :: Integer) 7)
+  add (Mod7 a) (Mod7 b) = lit (mod (add a b :: Integer) 7)
+  lit a = (Mod7 a)
+
+testExp :: Expr a => Maybe a
+testExp = parseExp lit add mul "(3 * -4) + 5"
+testInteger = testExp :: Maybe Integer
+testBool = testExp :: Maybe Bool
+testMinMax = testExp :: Maybe MinMax
+testMod7 = testExp :: Maybe Mod7
+
+-- testInteger = testExp :: Maybe Integer
 -- instance Expr Integer where
 
 -- evalStr :: String -> Maybe Integer
